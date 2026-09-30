@@ -168,9 +168,18 @@ function renderProducts(products) {
     const card = document.createElement('div');
     card.className = 'product-card';
 
-    const imgHTML = p.imagen
-      ? `<img src="${p.imagen}" alt="${p.nombre}" loading="lazy" />`
-      : `<div class="product-img-placeholder">${p.nombre}</div>`;
+  // Convierte link de Google Drive a URL directa de imagen
+  function driveUrl(url) {
+    if (!url) return '';
+    const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (m) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+    return url;
+  }
+
+  const imgSrc = driveUrl(p.imagen);
+  const imgHTML = imgSrc
+    ? `<img src="${imgSrc}" alt="${p.nombre}" loading="lazy" />`
+    : `<div class="product-img-placeholder">${p.nombre}</div>`;
 
     const badgeHTML = p.destacado
       ? `<span class="product-badge">Destacado</span>`
