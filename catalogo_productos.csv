@@ -1,0 +1,8 @@
+﻿id,nombre,categoria,descripcion,precio,imagen,destacado,colores,talles,codigo
+1,Remera Basica,Remeras,"Remera de algodon 100%, corte recto. Disponible en varios colores.",3500,,SI,Blanco|Negro|Gris|Navy,XS|S|M|L|XL|XXL,REM-001
+2,Remera Oversize,Remeras,"Corte amplio, tela de calidad premium.",4200,,NO,Negro|Crema|Verde,S|M|L|XL,REM-002
+3,Musculosa Deportiva,Musculosas,Ideal para el dia a dia y deportes. Tela liviana y transpirable.,2800,,NO,Negro|Blanco|Gris,XS|S|M|L|XL,MUS-001
+4,Buzo con Capucha,Buzos,"Interior frisado, capucha ajustable. Ideal para el frio.",7500,,SI,Negro|Gris|Bordo,S|M|L|XL|XXL,BUZ-001
+5,Campera Rompeviento,Camperas,"Impermeable, liviana, con bolsillos internos.",12000,,NO,Negro|Verde Militar,S|M|L|XL,CAM-001
+6,Pantalon Jogger,Pantalones,"Cordon en cintura, bolsillos laterales, puños en tobillos.",6500,,SI,Negro|Gris,S|M|L|XL|XXL,PAN-001
+7,Short Running,Shorts,"Interior de red, muy liviano. Ideal para deporte o casual.",3800,,NO,Negro|Navy|Gris,S|M|L|XL,SHO-001

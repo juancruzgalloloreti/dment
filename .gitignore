@@ -1,0 +1,13 @@
+﻿# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Python cache (del script actualizar_catalogo.py)
+__pycache__/
+*.pyc
