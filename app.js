@@ -69,9 +69,10 @@ function parseCSVLine(line) {
 //                     Descripción, Talles, Colores, Foto (URL), Visible
 function parsePrice(val) {
   if (!val) return 0;
-  // Elimina "$", puntos de miles y normaliza comas → "$5,200" → 5200
+  // En el Sheet el formato es "$5,200" donde la coma es separador de miles
+  // → solo sacamos $ y , para obtener 5200
   return parseFloat(
-    String(val).replace(/\$/g, '').replace(/\./g, '').replace(',', '.').trim()
+    String(val).replace(/\$/g, '').replace(/,/g, '').trim()
   ) || 0;
 }
 
