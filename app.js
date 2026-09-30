@@ -172,7 +172,7 @@ function renderProducts(products) {
   function driveUrl(url) {
     if (!url) return '';
     const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-    if (m) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+    if (m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w800`;
     return url;
   }
 
