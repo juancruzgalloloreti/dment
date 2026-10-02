@@ -24,7 +24,9 @@
         <a href="#catalogo">Catalogo</a>
         <a href="#contacto">Contacto</a>
       </nav>
-      <a href="#contacto" class="btn-nav">Consulta tu pedido</a>
+      <button class="btn-nav cart-toggle" id="cartToggle" type="button" aria-controls="cartPanel" aria-expanded="false">
+        Carrito <span class="cart-count" id="cartCount">0</span>
+      </button>
       <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -238,6 +240,22 @@
       </div>
     </div>
   </footer>
+
+  <div class="cart-backdrop" id="cartBackdrop" hidden></div>
+  <aside class="cart-panel" id="cartPanel" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">
+    <div class="cart-header">
+      <div>
+        <p class="section-label">Tu selección</p>
+        <h2 id="cartTitle">Carrito</h2>
+      </div>
+      <button class="cart-close" id="cartClose" type="button" aria-label="Cerrar carrito">×</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <p>Precios y disponibilidad se confirman por WhatsApp.</p>
+      <button class="btn btn-primary full-width" id="checkoutWhatsApp" type="button">Consultar por WhatsApp</button>
+    </div>
+  </aside>
 
   <script src="app.js"></script>
 </body>
