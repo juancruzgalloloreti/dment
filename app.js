@@ -65,8 +65,12 @@ function parseCSVLine(line) {
 }
 
 // Convierte filas CSV al mismo formato que productos.json
-// Columnas del Sheet: ID, Categoría, Título, Precio Hombre ($), Precio Especial ($),
-//                     Descripción, Talles, Colores, Foto (URL), Visible
+// Columnas de imágenes opcionales: Foto (URL), Fotos adicionales (URL),
+// Fotos modelo (URL), Foto categoría (URL). Varios links se separan con " | ".
+function parseImageList(value) {
+  return String(value || '').split('|').map(url => url.trim()).filter(Boolean);
+}
+
 function parsePrice(val) {
   if (!val) return 0;
   // En el Sheet el formato es "$5,200" donde la coma es separador de miles
@@ -109,7 +113,10 @@ function csvToProducts(csvText) {
       descripcion:   (row['descripción'] || row['descripcion'] || '').trim(),
       precio:        precioHombre,
       precioEspecial,
-      imagen:        (row['foto (url)'] || row['imagen'] || '').trim(),
+      imagenes:      parseImageList(row['foto (url)'] || row['imagen'] || ''),
+      imagenesAdicionales: parseImageList(row['fotos adicionales (url)'] || ''),
+      imagenesModelo: parseImageList(row['fotos modelo (url)'] || ''),
+      fotoCategoria: (row['foto categoría (url)'] || row['foto categoria (url)'] || '').trim(),
       destacado:     false,
       colores,
       talles:        tallesRaw ? [tallesRaw] : [],
@@ -168,18 +175,11 @@ function renderProducts(products) {
     const card = document.createElement('div');
     card.className = 'product-card';
 
-  // Convierte link de Google Drive a URL directa de imagen
-  function driveUrl(url) {
-    if (!url) return '';
-    const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-    if (m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w800`;
-    return url;
-  }
-
-  const imgSrc = driveUrl(p.imagen);
-  const imgHTML = imgSrc
-    ? `<img src="${imgSrc}" alt="${p.nombre}" loading="lazy" />`
-    : `<div class="product-img-placeholder">${p.nombre}</div>`;
+    const imageItems = [
+      ...normalizeImageItems(p.imagenes ?? p.imagen, 'Producto'),
+      ...normalizeImageItems(p.imagenesAdicionales, 'Vista adicional'),
+      ...normalizeImageItems(p.imagenesModelo, 'En modelo'),
+    ];
 
     const badgeHTML = p.destacado
       ? `<span class="product-badge">Destacado</span>`
@@ -192,18 +192,27 @@ function renderProducts(products) {
          </div>`
       : '';
 
-    card.innerHTML = `
-      <div class="product-img-wrap">
-        ${imgHTML}
-        ${badgeHTML}
-      </div>
-      <div class="product-info">
+    const imageWrap = document.createElement('div');
+    imageWrap.className = 'product-img-wrap';
+    if (imageItems.length) {
+      imageWrap.appendChild(createProductGallery(imageItems, p.nombre));
+    } else {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'product-img-placeholder';
+      placeholder.textContent = p.nombre;
+      imageWrap.appendChild(placeholder);
+    }
+    if (p.destacado) imageWrap.insertAdjacentHTML('beforeend', badgeHTML);
+
+    const info = document.createElement('div');
+    info.className = 'product-info';
+    info.innerHTML = `
         <div class="product-cat">${p.categoria || ''}</div>
         <div class="product-name">${p.nombre}</div>
         ${p.descripcion ? `<div class="product-desc">${p.descripcion}</div>` : ''}
         ${precioHTML}
-      </div>
     `;
+    card.append(imageWrap, info);
 
     // WhatsApp consult on click
     card.addEventListener('click', () => {
@@ -215,12 +224,75 @@ function renderProducts(products) {
   });
 }
 
+function driveUrl(url) {
+  if (!url) return '';
+  const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w800`;
+  return url;
+}
+
+function normalizeImageItems(value, label) {
+  const items = Array.isArray(value) ? value : parseImageList(value);
+  return items.map(url => ({ url, label }));
+}
+
+function createProductGallery(items, productName) {
+  const gallery = document.createElement('div');
+  gallery.className = 'product-gallery';
+
+  const image = document.createElement('img');
+  image.className = 'product-gallery-image';
+  image.alt = productName;
+  image.loading = 'lazy';
+  gallery.appendChild(image);
+
+  const caption = document.createElement('span');
+  caption.className = 'product-gallery-caption';
+  gallery.appendChild(caption);
+
+  if (items.length > 1) {
+    const controls = document.createElement('div');
+    controls.className = 'product-gallery-controls';
+    const previous = document.createElement('button');
+    previous.type = 'button';
+    previous.className = 'gallery-arrow';
+    previous.setAttribute('aria-label', 'Foto anterior');
+    previous.textContent = '‹';
+    const count = document.createElement('span');
+    count.className = 'gallery-count';
+    const next = document.createElement('button');
+    next.type = 'button';
+    next.className = 'gallery-arrow';
+    next.setAttribute('aria-label', 'Foto siguiente');
+    next.textContent = '›';
+    controls.append(previous, count, next);
+    gallery.appendChild(controls);
+
+    let active = 0;
+    const show = (index) => {
+      active = (index + items.length) % items.length;
+      image.src = driveUrl(items[active].url);
+      image.alt = `${productName} — ${items[active].label}`;
+      caption.textContent = items[active].label;
+      count.textContent = `${active + 1}/${items.length}`;
+    };
+    previous.addEventListener('click', event => { event.stopPropagation(); show(active - 1); });
+    next.addEventListener('click', event => { event.stopPropagation(); show(active + 1); });
+    show(active);
+  } else {
+    image.src = driveUrl(items[0].url);
+    caption.textContent = items[0].label;
+  }
+  return gallery;
+}
+
 // ---- Filter buttons (dinámicos, basados en categorías reales) ----
 const filtersContainer = document.getElementById('filters');
 
 function buildFilters(products) {
   // Obtener categorías únicas en el orden en que aparecen
   const cats = ['todos', ...new Set(products.map(p => p.categoria).filter(Boolean))];
+  buildCategoryCards(products);
   filtersContainer.innerHTML = '';
   cats.forEach(cat => {
     const btn = document.createElement('button');
@@ -234,6 +306,48 @@ function buildFilters(products) {
       renderProducts(allProducts);
     });
     filtersContainer.appendChild(btn);
+  });
+}
+
+function buildCategoryCards(products) {
+  const container = document.getElementById('categoryCards');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const categories = [...new Set(products.map(p => p.categoria).filter(Boolean))];
+  categories.forEach(category => {
+    const product = products.find(p => p.categoria === category);
+    const categoryImage = products.find(p => p.categoria === category && p.fotoCategoria)?.fotoCategoria
+      || normalizeImageItems(product?.imagenes ?? product?.imagen, 'Producto')[0]?.url
+      || '';
+    const card = document.createElement('div');
+    card.className = 'cat-card';
+    card.dataset.cat = category;
+    card.setAttribute('role', 'button');
+    card.tabIndex = 0;
+    card.addEventListener('click', () => filterCat(category));
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        filterCat(category);
+      }
+    });
+
+    if (categoryImage) {
+      const image = document.createElement('img');
+      image.className = 'cat-image';
+      image.src = driveUrl(categoryImage);
+      image.alt = `Foto de ${category}`;
+      image.loading = 'lazy';
+      card.appendChild(image);
+    }
+
+    const displayName = ({ Sudaderas: 'Buzos', Bermudas: 'Shorts' })[category] || category;
+    const label = document.createElement('span');
+    label.className = 'cat-label';
+    label.textContent = displayName;
+    card.appendChild(label);
+    container.appendChild(card);
   });
 }
 
