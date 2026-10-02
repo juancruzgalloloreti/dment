@@ -19,9 +19,9 @@
         <img src="dment.jpg" alt="D'MENT Logo" />
       </a>
       <nav class="nav-links" id="navLinks">
-        <a href="#nosotros">Nosotros</a>
-        <a href="#categorias">Categorias</a>
         <a href="#catalogo">Catalogo</a>
+        <a href="#categorias">Categorías</a>
+        <a href="#nosotros">Nosotros</a>
         <a href="#contacto">Contacto</a>
       </nav>
       <button class="btn-nav cart-toggle" id="cartToggle" type="button" aria-controls="cartPanel" aria-expanded="false">
@@ -32,6 +32,42 @@
       </button>
     </div>
   </header>
+
+<!-- CATALOGO -->
+  <section class="catalogo catalogo-principal" id="catalogo">
+    <div class="container">
+      <p class="section-label center reveal">Nuestros productos</p>
+      <h2 class="section-title center reveal">Catálogo <em>mayorista</em></h2>
+      <p class="catalog-intro">Explorá cada prenda y recorré sus fotos, incluidas las imágenes de modelo.</p>
+      <div class="filters reveal" id="filters">
+        <button class="filter-btn active" data-filter="todos">Todos</button>
+        <button class="filter-btn" data-filter="Remeras">Remeras</button>
+        <button class="filter-btn" data-filter="Musculosas">Musculosas</button>
+        <button class="filter-btn" data-filter="Buzos">Buzos</button>
+        <button class="filter-btn" data-filter="Camperas">Camperas</button>
+        <button class="filter-btn" data-filter="Pantalones">Pantalones</button>
+        <button class="filter-btn" data-filter="Shorts">Shorts</button>
+      </div>
+      <div class="products-grid" id="productsGrid">
+        <div class="no-products" id="noProducts">
+          <div class="no-products-icon">&#128218;</div>
+          <p>Catalogo en construccion.<br/>Pronto los productos disponibles.</p>
+          <a href="#contacto" class="btn btn-primary">Consulta disponibilidad</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIAS -->
+  <section class="categorias" id="categorias">
+    <div class="container">
+      <p class="section-label center reveal">Lo que fabricamos</p>
+      <h2 class="section-title center reveal">Nuestras <em>categorías</em></h2>
+    </div>
+    <div class="cats-grid reveal" id="categoryCards"></div>
+  </section>
+
+
 
   <!-- HERO -->
   <section class="hero" id="inicio">
@@ -101,15 +137,6 @@
     </div>
   </section>
 
-  <!-- CATEGORIAS -->
-  <section class="categorias" id="categorias">
-    <div class="container">
-      <p class="section-label center reveal">Lo que fabricamos</p>
-      <h2 class="section-title center reveal">Nuestras <em>categorías</em></h2>
-    </div>
-    <div class="cats-grid reveal" id="categoryCards"></div>
-  </section>
-
   <!-- BENEFICIOS -->
   <section class="beneficios">
     <div class="container">
@@ -135,31 +162,6 @@
           <div class="benefit-icon">&#128666;</div>
           <h3>Envíos a todo el país</h3>
           <p>Despachamos a cualquier punto de Argentina, rápido y seguro.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CATALOGO -->
-  <section class="catalogo" id="catalogo">
-    <div class="container">
-      <p class="section-label center reveal">Nuestros productos</p>
-      <h2 class="section-title center reveal">Catálogo <em>mayorista</em></h2>
-      <p class="catalog-intro">Explorá cada prenda y recorré sus fotos, incluidas las imágenes de modelo.</p>
-      <div class="filters reveal" id="filters">
-        <button class="filter-btn active" data-filter="todos">Todos</button>
-        <button class="filter-btn" data-filter="Remeras">Remeras</button>
-        <button class="filter-btn" data-filter="Musculosas">Musculosas</button>
-        <button class="filter-btn" data-filter="Buzos">Buzos</button>
-        <button class="filter-btn" data-filter="Camperas">Camperas</button>
-        <button class="filter-btn" data-filter="Pantalones">Pantalones</button>
-        <button class="filter-btn" data-filter="Shorts">Shorts</button>
-      </div>
-      <div class="products-grid" id="productsGrid">
-        <div class="no-products" id="noProducts">
-          <div class="no-products-icon">&#128218;</div>
-          <p>Catalogo en construccion.<br/>Pronto los productos disponibles.</p>
-          <a href="#contacto" class="btn btn-primary">Consulta disponibilidad</a>
         </div>
       </div>
     </div>
